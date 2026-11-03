@@ -34,7 +34,12 @@
 </div>
 <script src="pannellum.js"></script>
 <script>
-  function scene(img){return{ type:'equirectangular', panorama:img, hfov:100 };}
+  function scene(base){return{
+    type:'multires',
+    multiRes:{basePath:base,path:'/%l/%s%y_%x',fallbackPath:'/fallback/%s',
+      extension:'jpg',tileResolution:512,maxLevel:4,cubeResolution:2600},
+    hfov:100
+  };}
   var viewer = pannellum.viewer('pano', {
     default:{
       firstScene:'view1', autoLoad:true, autoRotate:-2, autoRotateInactivityDelay:3500,
@@ -42,7 +47,7 @@
       showControls:false, showZoomCtrl:false, showFullscreenCtrl:false,
       keyboardZoom:true, mouseZoom:true, minHfov:50, maxHfov:120, compass:false
     },
-    scenes:{ view1: scene('view1.jpg'), view2: scene('view2.jpg') }
+    scenes:{ view1: scene('view1'), view2: scene('view2') }
   });
   function go(id){ viewer.loadScene(id); }
   viewer.on('scenechange', function(id){
