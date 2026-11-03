@@ -23,11 +23,30 @@
     .bare-logo{height:42px;top:12px;left:12px;}
     .view-switch button{padding:9px 16px;font-size:13px;}
   }
+  /* BGP logo link v1 */
+  .bgp-logo-link .bare-logo{pointer-events:auto;cursor:pointer;-webkit-touch-callout:none;}
+  .bgp-logo-link{-webkit-tap-highlight-color:transparent;}
 </style>
 </head>
 <body>
 <div id="pano"></div>
-<img class="bare-logo" src="logo.png" alt="MATIANI by Biograpi">
+<a id="bgp-logo-link" class="bgp-logo-link" href="https://biograpi.ge/ka/mt/apartments?view=grid" aria-label="MATIANI by Biograpi"><img class="bare-logo" src="logo.png" alt="MATIANI by Biograpi"></a>
+<script>
+/* BGP logo link v1: logo opens the project grid on biograpi.ge in the visitor's language.
+   Language comes from ?lang=ka|en|ru (added to the 360 links on biograpi.ge by GTM),
+   then from sessionStorage, else ka. Without JS the static href (ka) still works. */
+(function () {
+  var PATH = "mt/apartments?view=grid";
+  var a = document.getElementById("bgp-logo-link");
+  if (!a) return;
+  var lang = "ka", m = /[?&]lang=(ka|en|ru)(?:&|$)/.exec(location.search);
+  try {
+    if (m) { lang = m[1]; sessionStorage.setItem("bgp_lang", lang); }
+    else if (/^(ka|en|ru)$/.test(sessionStorage.getItem("bgp_lang") || "")) lang = sessionStorage.getItem("bgp_lang");
+  } catch (e) { if (m) lang = m[1]; }
+  a.href = "https://biograpi.ge/" + lang + "/" + PATH;
+})();
+</script>
 <div class="view-switch">
   <button id="btn-view1" class="active" onclick="go('view1')">ხედი 1</button>
   <button id="btn-view2" onclick="go('view2')">ხედი 2</button>
