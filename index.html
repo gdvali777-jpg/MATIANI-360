@@ -2,6 +2,40 @@
 <html lang="ka">
 <head>
 <meta charset="utf-8">
+<script>
+/* Strip Google click-id / cross-domain linker params from the address bar.
+   biograpi.ge GTM Conversion Linker appends these on click-through; this page
+   does not load GTM. history.replaceState only — no reload. Keeps lang and any
+   other non-tracking param, and keeps the hash. Runs before the logo script
+   reads ?lang=. */
+(function () {
+  try {
+    if (!window.history || !history.replaceState) return;
+    var search = location.search;
+    if (!search || search.length < 2) return;
+    var parts = search.substring(1).split("&");
+    var keep = [];
+    var dropped = false;
+    for (var i = 0; i < parts.length; i++) {
+      var part = parts[i];
+      if (!part) continue;
+      var eq = part.indexOf("=");
+      var rawKey = eq < 0 ? part : part.substring(0, eq);
+      var key = rawKey;
+      try { key = decodeURIComponent(rawKey.replace(/\+/g, " ")); } catch (e) {}
+      key = String(key).toLowerCase();
+      if (key === "_gl" || key === "gclid" || key === "dclid" || key === "gbraid" ||
+          key === "wbraid" || key === "gclsrc" || key.indexOf("_gcl_") === 0) {
+        dropped = true;
+      } else {
+        keep.push(part);
+      }
+    }
+    if (!dropped) return;
+    history.replaceState(history.state, "", location.pathname + (keep.length ? "?" + keep.join("&") : "") + location.hash);
+  } catch (e) {}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Matiani 360° | Biograpi Living</title>
 <link rel="stylesheet" href="pannellum.css">
